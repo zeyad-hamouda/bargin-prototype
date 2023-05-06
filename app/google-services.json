@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "464877673393",
+    "project_id": "bargin-7b700",
+    "storage_bucket": "bargin-7b700.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464877673393:android:0bb74e8e4b880c4c037b90",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464877673393-f92fh4vjqiehr7bp57qegld3mvic60pa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKWw3UzNeGGSAyOtaWAPP0rfiaeGG63XI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464877673393-f92fh4vjqiehr7bp57qegld3mvic60pa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

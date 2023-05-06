@@ -1,0 +1,15 @@
+        // Check if user is logged in
+        String displayName = currentUser != null ? currentUser.getDisplayName() : null;
+        if (!TextUtils.isEmpty(displayName)) {
+            String[] nameParts = displayName.split(" ");
+            String firstName = nameParts[0];
+            String welcomeText = "Welcome " + firstName;
+            welcomeMessage.setText(welcomeText);
+            welcomeMessage.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
+        } else {
+            welcomeMessage.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
+        }
