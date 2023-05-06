@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
@@ -16,59 +20,104 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private boolean isLoggedIn = false;
 
+    private DatabaseReference mDatabaseRef; // Add this line
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button loginButton = findViewById(R.id.login_button);
-        Button logoutButton = findViewById(R.id.logout_button);
         TextView welcomeMessage = findViewById(R.id.welcome_message);
+        Spinner userSpinner = findViewById(R.id.user_spinner);
+        ImageButton dropdownButton = findViewById(R.id.logout_button);
+        Button loginButton = findViewById(R.id.login_button);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        /// Check if user is logged in
         if (currentUser != null) {
-            String displayName = currentUser.getDisplayName();
-            if (!TextUtils.isEmpty(displayName)) {
-                welcomeMessage.setText("Welcome " + displayName);
-            }
-            welcomeMessage.setVisibility(View.VISIBLE);
-            loginButton.setVisibility(View.GONE);
-            logoutButton.setVisibility(View.VISIBLE);
+            String email = currentUser.getEmail();
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users");
+            mDatabaseRef.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ArrayList<String> userNames = new ArrayList<>();
+                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                        String firstName = userSnapshot.child("firstName").getValue(String.class);
+                        String lastName = userSnapshot.child("lastName").getValue(String.class);
+                        if (!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName)) {
+                            String userName = firstName + " " + lastName;
+                            userNames.add(userName);
+                        }
+                    }
+                    userNames.add("Logout");
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, userNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    userSpinner.setAdapter(adapter);
+                    userSpinner.setVisibility(View.VISIBLE);
+                    dropdownButton.setVisibility(View.VISIBLE);
+                    loginButton.setVisibility(View.GONE);
+                }
+
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("MainActivity", "Error reading user's data", error.toException());
+                }
+            });
         } else {
-            welcomeMessage.setVisibility(View.GONE);
+            userSpinner.setVisibility(View.GONE);
+            dropdownButton.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
-            logoutButton.setVisibility(View.GONE);
         }
+
+        dropdownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userSpinner.performClick();
+            }
+        });
+
+        userSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                String userName = adapterView.getItemAtPosition(position).toString();
+                if (userName.equals("Logout")) {
+                    mAuth.signOut();
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    welcomeMessage.setText("Welcome " + userName);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                welcomeMessage.setText("Welcome");
+            }
+        });
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Start the login activity
+                // Launch the login activity
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Sign out the user
-                mAuth.signOut();
-                Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_SHORT).show();
-                welcomeMessage.setVisibility(View.GONE);
-                loginButton.setVisibility(View.VISIBLE);
-                logoutButton.setVisibility(View.GONE);
+                finish();
             }
         });
     }

@@ -6,6 +6,12 @@
     android:padding="16dp"
     android:gravity="center">
 
+    <include
+        layout="@layout/logo_layout"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="-230dp"/>
+
     <EditText
         android:id="@+id/email_input"
         android:layout_width="match_parent"
@@ -31,11 +37,12 @@
         android:id="@+id/signup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:minHeight="48dp"
+        android:onClick="openSignUpActivity"
         android:text="Don't have an account? Create an account"
         android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:background="@android:color/transparent"
-        android:layout_marginTop="16dp"
-        android:onClick="openSignUpActivity" />
+        android:textSize="14sp" />
 
 </LinearLayout>
