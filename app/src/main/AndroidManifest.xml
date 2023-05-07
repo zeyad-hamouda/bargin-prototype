@@ -26,6 +26,9 @@
         <activity android:name=".SignUpActivity"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"/>
+        <activity android:name=".SearchActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".LoginActivity"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"/>

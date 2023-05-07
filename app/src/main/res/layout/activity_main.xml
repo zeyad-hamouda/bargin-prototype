@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search for products"
+        android:layout_marginTop="25dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search for products" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchView"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/welcome_message"
@@ -11,6 +28,7 @@
         android:visibility="gone"
         android:textSize="24sp"
         android:textAlignment="center"
+        android:layout_marginTop="25dp"
         android:text="Welcome"/>
 
     <Spinner
