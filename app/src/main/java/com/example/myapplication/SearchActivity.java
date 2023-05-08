@@ -146,17 +146,27 @@ public class SearchActivity extends AppCompatActivity {
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                // Handle search query text change
-                // For example, filter a list of items based on the search query
-                List<Product> filteredItems = new ArrayList<>();
-                for (Product item : productList) {
-                    if (item.getName().toLowerCase().contains(newText.toLowerCase())) {
-                        filteredItems.add(item);
+                if (newText.isEmpty()) {
+                    // Show the full list of products if the search query is empty
+                    productList.clear();
+                    productList.addAll(allProducts);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    // Filter the list of products based on the search query
+                    String searchQuery = newText.toLowerCase();
+                    List<Product> filteredProducts = new ArrayList<>();
+                    for (Product product : allProducts) {
+                        if (product.getName().toLowerCase().contains(searchQuery) || product.getDescription().toLowerCase().contains(searchQuery)) {
+                            filteredProducts.add(product);
+                        }
                     }
+                    productList.clear();
+                    productList.addAll(filteredProducts);
+                    adapter.notifyDataSetChanged();
                 }
-                productAdapter.setProduct(filteredItems);
                 return true;
             }
+
 
 
             private void mergeResultsAndUpdateUI(List<Product> products) {
