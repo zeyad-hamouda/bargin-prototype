@@ -60,7 +60,7 @@ public class SearchActivity extends AppCompatActivity {
                     List<Product> productList = new ArrayList<>();
                     for (DocumentSnapshot document : task.getResult()) {
                         String productName = document.getString("name");
-                        String imageUrl = document.getString("image"); // Assuming the field name is "imageUrl"
+                        String imageUrl = document.getString("image");
                         Product product = new Product(productName, imageUrl);
                         productList.add(product);
                     }
@@ -78,5 +78,6 @@ public class SearchActivity extends AppCompatActivity {
         searchRecyclerView.setAdapter(productAdapter);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
 }
 

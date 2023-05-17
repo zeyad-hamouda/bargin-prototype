@@ -45,10 +45,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.hbb20.CountryCodePicker
-                android:id="@+id/countryCodePicker"
-                android:layout_width="95dp"
-                android:layout_height="wrap_content" />
+
 
             <EditText
                 android:id="@+id/phone_number_edit_text"

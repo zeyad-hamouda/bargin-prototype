@@ -15,11 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.Query;
+import com.google.firebase.auth.ActionCodeSettings;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,13 +34,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hbb20.CountryCodePicker;
+import android.content.SharedPreferences;
+
+import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mConfirmPasswordEditText;
-    private CountryCodePicker mCountryCodePicker;
     private EditText mPhoneNumberEditText;
     private EditText mFirstNameEditText;
     private EditText mLastNameEditText;
@@ -66,7 +75,6 @@ public class SignUpActivity extends AppCompatActivity {
         mDisplayNameEditText = findViewById(R.id.display_name_edit_text);
 
 
-        mCountryCodePicker = findViewById(R.id.countryCodePicker);
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,13 +82,11 @@ public class SignUpActivity extends AppCompatActivity {
                 String email = mEmailEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
                 String confirmPassword = mConfirmPasswordEditText.getText().toString();
-                String phoneCode = mCountryCodePicker.getSelectedCountryCode();
                 String phoneNumber = mPhoneNumberEditText.getText().toString();
                 String firstName = mFirstNameEditText.getText().toString();
                 String lastName = mLastNameEditText.getText().toString();
                 String dob = mDobEditText.getText().toString();
                 String displayName = mDisplayNameEditText.getText().toString();
-
 
                 if (TextUtils.isEmpty(firstName)) {
                     Toast.makeText(SignUpActivity.this, "Please enter your first name", Toast.LENGTH_SHORT).show();
@@ -102,10 +108,6 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (TextUtils.isEmpty(phoneCode)) {
-                    Toast.makeText(SignUpActivity.this, "Please enter your phone code", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(SignUpActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
@@ -165,30 +167,117 @@ public class SignUpActivity extends AppCompatActivity {
                                         Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
-                                    }
-                                }
 
+                                        mAuth.createUserWithEmailAndPassword(email, password)
+                                                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        FirebaseUser user = mAuth.getCurrentUser(); // Move the declaration here
+                                                        if (task.isSuccessful()) {
+                                                            // Step 2: Send a verification email
+                                                            if (user != null) {
+                                                                user.sendEmailVerification()
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                if (task.isSuccessful()) {
+                                                                                    // Verification email sent successfully
+                                                                                    Toast.makeText(SignUpActivity.this, "Registration successful! Please check your email for verification.", Toast.LENGTH_LONG).show();                                                                    } else {
+                                                                                    // Failed to send verification email
+                                                                                    // Handle the error or show an error message to the user
+                                                                                    Toast.makeText(SignUpActivity.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+                                                                                    // Cancel the registration
+                                                                                    if (user != null) {
+                                                                                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                            @Override
+                                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                                // Account deleted, show appropriate message or take necessary action
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        });
+                                                            }
+
+                                                            // Step 3: Phone number verification
+                                                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                                    phoneNumber, // e.g., +1234567890
+                                                                    60, // Timeout duration
+                                                                    TimeUnit.SECONDS,
+                                                                    SignUpActivity.this,
+                                                                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                                                        @Override
+                                                                        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                                                                            // Auto-retrieval or instant verification is successful
+                                                                            // Proceed with signing in the user
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onVerificationFailed(@NonNull FirebaseException e) {
+                                                                            // Verification failed
+                                                                            // Handle the error or show an error message to the user
+                                                                            Toast.makeText(SignUpActivity.this, "Phone number verification failed", Toast.LENGTH_SHORT).show();
+                                                                            // Cancel the registration
+                                                                            if (user != null) {
+                                                                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                        // Account deleted, show appropriate message or take necessary action
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                                                                            Toast.makeText(SignUpActivity.this, "Verification code sent to your phone number. Please check your phone.", Toast.LENGTH_LONG).show();                                                                // Save the verification ID and token for later use
+                                                                            // Save the verification ID and token for later use
+                                                                            // You can store them in SharedPreferences or in global variables
+                                                                            // For example:
+                                                                            // Save the verification ID
+                                                                            SharedPreferences preferences = getSharedPreferences("VerificationPrefs", MODE_PRIVATE);
+                                                                            SharedPreferences.Editor editor = preferences.edit();
+                                                                            editor.putString("verificationId", verificationId);
+                                                                            editor.apply();
+
+                                                                            // Proceed to the verification screen
+                                                                            Intent intent = new Intent(SignUpActivity.this, VerificationActivity.class);
+                                                                            startActivity(intent);
+                                                                        }
+                                                                    });
+                                                        } else {
+                                                            // Failed to create a new user account
+                                                            // Handle the error or show an error message to the user
+                                                            Toast.makeText(SignUpActivity.this, "Failed to create a new user account", Toast.LENGTH_SHORT).show();
+
+                                                            // Cancel the registration
+                                                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        // Account deleted successfully
+                                                                        // Show appropriate message or take necessary action
+                                                                    } else {
+                                                                        // Failed to delete the account
+                                                                        // Show appropriate message or take necessary action
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                    }
+
+                                }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    // Failed to read value, display error message
-                                    Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    // Handle the error or show an error message to the user
+                                    Toast.makeText(getApplicationContext(), "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-                            mAuth.createUserWithEmailAndPassword(email, password)
-                                    .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                // User created successfully, proceed to add user data to database
-                                                FirebaseUser user = mAuth.getCurrentUser();
-                                                // Add user data to database ...
-                                            } else {
-                                                // User creation failed, display a message to the user
-                                                Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+
+
                             mLoginButton = findViewById(R.id.login_button);
                             mLoginButton.setOnClickListener(new View.OnClickListener() {
                                 @Override

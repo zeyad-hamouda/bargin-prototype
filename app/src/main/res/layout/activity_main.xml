@@ -14,18 +14,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search for products"
+            android:inputType="text"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:inputType="text" />
+            android:paddingEnd="16dp" />
 
         <ImageButton
             android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_search"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Search"
             android:padding="8dp"
-            android:contentDescription="Search" />
+            android:src="@drawable/ic_search"
+            android:scaleType="center" />
 
     </RelativeLayout>
 
@@ -37,10 +38,11 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
+
         <ImageButton
             android:id="@+id/home_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:src="@drawable/ic_home"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -51,8 +53,8 @@
 
         <ImageButton
             android:id="@+id/account_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:src="@drawable/ic_account"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -60,6 +62,7 @@
             android:contentDescription="Account"
             android:scaleType="centerInside"
             android:layout_gravity="center" />
+
 
     </LinearLayout>
 
