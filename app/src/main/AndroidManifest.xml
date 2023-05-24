@@ -8,6 +8,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -40,6 +42,12 @@
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"/>
         <activity android:name=".SearchActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".EmailVerificationActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".VerificationActivity"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"/>
     </application>

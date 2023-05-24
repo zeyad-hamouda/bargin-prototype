@@ -41,11 +41,9 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String searchTerm = searchEditText.getText().toString().trim();
 
-                // Query the "productA" collection
                 Query productAQuery = db.collection("productA").whereEqualTo("name", searchTerm);
                 performQuery(productAQuery);
 
-                // Query the "productB" collection
                 Query productBQuery = db.collection("productB").whereEqualTo("name", searchTerm);
                 performQuery(productBQuery);
             }

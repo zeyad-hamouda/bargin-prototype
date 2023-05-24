@@ -7,20 +7,20 @@ public class User {
     private String firstName;
     private String lastName;
     private String dateOfBirth;
-    private String displayName; // new field for display name
+    private String displayName;
+    private boolean isSellerAccount;
 
     public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String email, String phoneNumber, String password, String firstName, String lastName, String dateOfBirth, String displayName) {
-        this.email = email;
+    public User(String email, String phoneNumber, String password, String firstName, String lastName, String dateOfBirth, String displayName, boolean isSellerAccount) {        this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.displayName = displayName;
+        this.isSellerAccount = isSellerAccount;
     }
 
     public String getEmail() {
@@ -78,4 +78,6 @@ public class User {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+    public boolean isSellerAccount(){ return isSellerAccount;}
+    public void isSellerAccount(boolean isSellerAccount){this.isSellerAccount = isSellerAccount;}
 }

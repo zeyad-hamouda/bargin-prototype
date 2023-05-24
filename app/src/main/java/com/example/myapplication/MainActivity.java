@@ -7,6 +7,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_button);
         ImageButton accountButton = findViewById(R.id.account_button);
         EditText searchEditText = findViewById(R.id.searchEditText);
+        FirebaseApp.initializeApp(this);
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(DebugAppCheckProviderFactory.getInstance());
+
 
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Perform actions for home button
-                // Start the layout_home activity
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
             }

@@ -2,7 +2,9 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class VerificationActivity extends AppCompatActivity {
 
-    private static final String TAG = "VerificationActivity";
     private FirebaseAuth mAuth;
+    private Button mResendButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,50 +25,45 @@ public class VerificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verification);
 
         mAuth = FirebaseAuth.getInstance();
-
-        // Check if the user is already signed in
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            if (user.isEmailVerified()) {
-                // User's email is already verified
-                redirectToMainActivity();
-            } else {
-                // User's email is not verified, send another verification email
-                sendVerificationEmail(user);
+
+        mResendButton = findViewById(R.id.resend_button);
+
+        mResendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (user != null) {
+                    user.sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(VerificationActivity.this, "Verification email sent.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(VerificationActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
             }
-        } else {
-            // No user is currently signed in
-            redirectToLoginActivity();
+        });
+
+        if (user != null && user.isEmailVerified()) {
+            Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
-    private void sendVerificationEmail(FirebaseUser user) {
-        user.sendEmailVerification()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Verification email sent");
-                            // Show a message to the user or perform any other desired action
-                        } else {
-                            Log.e(TAG, "Failed to send verification email", task.getException());
-                            // Show an error message to the user or perform any other desired action
-                        }
-                    }
-                });
-    }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-    private void redirectToMainActivity() {
-        // Redirect the user to the main activity
-        Intent intent = new Intent(VerificationActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void redirectToLoginActivity() {
-        // Redirect the user to the login activity
-        Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null && user.isEmailVerified()) {
+            Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

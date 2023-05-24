@@ -5,7 +5,6 @@ public class Product {
     private String imageUrl;
 
     public Product() {
-        // Default constructor required for Firestore
     }
 
     public Product(String name, String imageUrl) {

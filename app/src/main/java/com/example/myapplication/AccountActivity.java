@@ -44,8 +44,6 @@ public class AccountActivity extends AppCompatActivity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Perform actions for home button
-                // Start the layout_home activity
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -71,13 +69,12 @@ public class AccountActivity extends AppCompatActivity {
                         } else {
                             welcomeMessage.setText("Welcome");
                         }
-                        break; // Only retrieve the first matching user
+                        break;
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    // Handle database error if needed
                 }
             });
             loginButton.setVisibility(View.GONE);

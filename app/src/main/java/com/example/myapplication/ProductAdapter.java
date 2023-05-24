@@ -36,11 +36,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = productList.get(position);
         holder.productNameTextView.setText(product.getName());
-        // Load the image using a library of your choice (e.g., Glide or Picasso)
-        // Example with Glide:
         Glide.with(holder.itemView)
                 .load(product.getImageUrl())
-                .placeholder(R.drawable.placeholder) // Placeholder image while loading
+                .placeholder(R.drawable.placeholder)
                 .into(holder.productImageView);
     }
 
