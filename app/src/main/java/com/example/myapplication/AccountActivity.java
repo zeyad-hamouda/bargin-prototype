@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,11 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 public class AccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseRef;
+    private Button mDeleteButton;
 
 
     @Override
@@ -33,12 +39,19 @@ public class AccountActivity extends AppCompatActivity {
 
         ImageButton homeButton = findViewById(R.id.home_button);
         ImageButton accountButton = findViewById(R.id.account_button);
+        mDeleteButton = findViewById(R.id.delete_button);
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch the account activity
                 Intent intent = new Intent(AccountActivity.this, AccountActivity.class);
                 startActivity(intent);
+            }
+        });
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteConfirmationDialog();
             }
         });
         homeButton.setOnClickListener(new View.OnClickListener() {
@@ -106,4 +119,50 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
     }
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Account");
+        builder.setMessage("Are you sure you want to delete your account?");
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAccount();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.create().show();
+    }
+
+    private void deleteAccount() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+
+        // Delete user from Realtime Database
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        databaseRef.removeValue();
+
+        // Delete user from Authentication
+        user.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        // Deletion successful
+                        Toast.makeText(AccountActivity.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+
+                        // Navigate to desired activity (e.g., MainActivity)
+                        Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Deletion failed
+                        Toast.makeText(AccountActivity.this, "Failed to delete account", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
 }
