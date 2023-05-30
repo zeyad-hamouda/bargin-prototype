@@ -13,7 +13,8 @@ public class User {
     public User() {
     }
 
-    public User(String email, String phoneNumber, String password, String firstName, String lastName, String dateOfBirth, String displayName, boolean isSellerAccount) {        this.email = email;
+    public User(String email, String phoneNumber, String password, String firstName, String lastName, String dateOfBirth, String displayName, boolean isSellerAccount) {
+        this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.firstName = firstName;
@@ -21,6 +22,14 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.displayName = displayName;
         this.isSellerAccount = isSellerAccount;
+    }
+
+    public User(String email, String phoneNumber, String firstName, String lastName, String dob) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dob;
     }
 
     public String getEmail() {

@@ -50,6 +50,15 @@
         <activity android:name=".VerificationActivity"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"/>
+        <activity android:name=".EditAccountActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".AddProductsActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ProductHistoryActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>

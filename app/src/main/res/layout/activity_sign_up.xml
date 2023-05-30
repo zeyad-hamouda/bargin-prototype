@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Date of Birth"
+            android:inputType="date"
             android:minHeight="48dp" />
 
         <EditText
@@ -72,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
+            android:inputType="textPassword"
             android:minHeight="48dp" />
 
         <EditText
@@ -79,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
+            android:inputType="textPassword"
             android:minHeight="48dp" />
 
         <CheckBox

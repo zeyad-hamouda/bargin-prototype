@@ -30,6 +30,11 @@ public class AccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseRef;
     private Button mDeleteButton;
+    private Button mEditAccountButton;
+    private Button mAddProducts;
+    private Button mProductHistory;
+    private TextView mWelcome;
+    private boolean isSellerAccount = false;
 
 
     @Override
@@ -40,11 +45,37 @@ public class AccountActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_button);
         ImageButton accountButton = findViewById(R.id.account_button);
         mDeleteButton = findViewById(R.id.delete_button);
+        mEditAccountButton = findViewById(R.id.edit_account_button);
+        mWelcome = findViewById(R.id.welcome_message);
+        mAddProducts = findViewById(R.id.add_products_button);
+        mProductHistory = findViewById(R.id.previously_added_button);
+
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch the account activity
                 Intent intent = new Intent(AccountActivity.this, AccountActivity.class);
+                startActivity(intent);
+            }
+        });
+        mEditAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccountActivity.this, EditAccountActivity.class);
+                startActivity(intent);
+            }
+        });
+        mAddProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccountActivity.this, AddProductsActivity.class);
+                startActivity(intent);
+            }
+        });
+        mProductHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccountActivity.this, ProductHistoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -62,6 +93,7 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
+
         TextView welcomeMessage = findViewById(R.id.welcome_message);
         Button loginButton = findViewById(R.id.login_button);
         Button logoutButton = findViewById(R.id.logout_button);
@@ -77,6 +109,7 @@ public class AccountActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         String firstName = userSnapshot.child("firstName").getValue(String.class);
+                        isSellerAccount = userSnapshot.child("sellerAccount").getValue(Boolean.class);
                         if (firstName != null && !firstName.isEmpty()) {
                             welcomeMessage.setText("Welcome, " + firstName);
                         } else {
@@ -84,18 +117,30 @@ public class AccountActivity extends AppCompatActivity {
                         }
                         break;
                     }
+                    if (isSellerAccount) {
+                        mAddProducts.setVisibility(View.VISIBLE);
+                        mProductHistory.setVisibility(View.VISIBLE);
+                    } else {
+                        mAddProducts.setVisibility(View.GONE);
+                        mProductHistory.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
+            welcomeMessage.setText("Welcome");
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
+            mDeleteButton.setVisibility(View.VISIBLE);
+            mEditAccountButton.setVisibility(View.VISIBLE);
         } else {
-            welcomeMessage.setText("Welcome");
             loginButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
+            mDeleteButton.setVisibility(View.GONE);
+            mEditAccountButton.setVisibility(View.GONE);
+            mWelcome.setVisibility(View.GONE);
         }
 
         loginButton.setOnClickListener(new View.OnClickListener() {

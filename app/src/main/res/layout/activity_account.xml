@@ -7,38 +7,115 @@
         android:id="@+id/welcome_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="16dp"
         android:textSize="24sp"
         android:textAlignment="center"
         android:text="Welcome" />
+
+    <View
+        android:id="@+id/login_line_above"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/welcome_message"
+        android:background="@android:color/black" />
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/welcome_message"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@id/login_line_above"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/black"
         android:layout_marginTop="16dp"
         android:text="Login" />
+
+    <View
+        android:id="@+id/login_line_below"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/login_button"
+        android:background="@android:color/black" />
+
+    <Button
+        android:id="@+id/add_products_button"
+        android:layout_width="wrap_content"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/login_line_below"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:text="Add Products"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/add_products_line_below"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/add_products_button"
+        android:background="@android:color/black" />
+
+    <Button
+        android:id="@+id/previously_added_button"
+        android:layout_width="wrap_content"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/add_products_line_below"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:text="Previously Added Products"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/previously_added_line_below"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/previously_added_button"
+        android:background="@android:color/black" />
+
+    <Button
+        android:id="@+id/edit_account_button"
+        android:layout_width="wrap_content"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/previously_added_line_below"
+        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:text="Edit Account" />
+
+    <View
+        android:id="@+id/edit_account_line_below"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/edit_account_button"
+        android:background="@android:color/black" />
+
     <Button
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/login_button"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/edit_account_line_below"
         android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
-        android:text="Delete Account"
-        />
+        android:text="Delete Account" />
+
+    <View
+        android:id="@+id/delete_line_below"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/delete_button"
+        android:background="@android:color/black" />
 
     <Button
         android:id="@+id/logout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/welcome_message"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@id/delete_line_below"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/black"
         android:layout_marginTop="16dp"
-        android:text="Logout"
-        android:visibility="gone" />
+        android:text="Logout" />
 
     <LinearLayout
         android:id="@+id/bottomLayout"
@@ -71,8 +148,6 @@
             android:scaleType="centerInside"
             android:layout_gravity="center" />
 
-
     </LinearLayout>
 
 </RelativeLayout>
-
