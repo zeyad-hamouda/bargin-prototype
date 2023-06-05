@@ -35,6 +35,7 @@ public class AccountActivity extends AppCompatActivity {
     private Button mProductHistory;
     private TextView mWelcome;
     private boolean isSellerAccount = false;
+    private ImageButton mBackButton;
 
 
     @Override
@@ -49,12 +50,20 @@ public class AccountActivity extends AppCompatActivity {
         mWelcome = findViewById(R.id.welcome_message);
         mAddProducts = findViewById(R.id.add_products_button);
         mProductHistory = findViewById(R.id.previously_added_button);
+        mBackButton = findViewById(R.id.back_button);
 
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch the account activity
                 Intent intent = new Intent(AccountActivity.this, AccountActivity.class);
+                startActivity(intent);
+            }
+        });
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

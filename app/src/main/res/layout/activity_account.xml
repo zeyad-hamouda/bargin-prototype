@@ -3,21 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/welcome_message"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginLeft="16dp"
-        android:textSize="24sp"
-        android:textAlignment="center"
-        android:text="Welcome" />
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_backarrow"
+            android:contentDescription="Back"
+            android:scaleType="centerInside"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/welcome_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="24sp"
+            android:text="Welcome" />
+    </LinearLayout>
+
 
     <View
         android:id="@+id/login_line_above"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/welcome_message"
+        android:layout_below="@id/topLayout"
         android:background="@android:color/black" />
 
     <Button

@@ -11,9 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.myapplication.Product;
 import com.example.myapplication.R;
-
 
 import java.util.List;
 
@@ -35,6 +33,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = productList.get(position);
+
         holder.productNameTextView.setText(product.getName());
         Glide.with(holder.itemView)
                 .load(product.getImageUrl())
