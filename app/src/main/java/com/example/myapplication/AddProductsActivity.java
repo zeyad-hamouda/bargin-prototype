@@ -34,6 +34,7 @@ public class AddProductsActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private EditText priceAEditText;
     private EditText priceBEditText;
+    private EditText categoryEditText; // New field for product category
     private Button selectImageButton;
     private ImageView selectedImageView;
     private Button addProductButton;
@@ -54,6 +55,7 @@ public class AddProductsActivity extends AppCompatActivity {
         descriptionEditText = findViewById(R.id.description_edit_text);
         priceAEditText = findViewById(R.id.price_a_edit_text);
         priceBEditText = findViewById(R.id.price_b_edit_text);
+        categoryEditText = findViewById(R.id.category_edit_text); // Initialize the category field
         selectImageButton = findViewById(R.id.select_image_button);
         selectedImageView = findViewById(R.id.selected_image_view);
         addProductButton = findViewById(R.id.add_product_button);
@@ -100,8 +102,9 @@ public class AddProductsActivity extends AppCompatActivity {
         String description = descriptionEditText.getText().toString().trim();
         String priceA = priceAEditText.getText().toString().trim();
         String priceB = priceBEditText.getText().toString().trim();
+        String category = categoryEditText.getText().toString().trim(); // Retrieve the category value
 
-        if (id.isEmpty() || name.isEmpty() || description.isEmpty() || priceA.isEmpty() || priceB.isEmpty() || imageUri == null) {
+        if (id.isEmpty() || name.isEmpty() || description.isEmpty() || priceA.isEmpty() || priceB.isEmpty() || category.isEmpty() || imageUri == null) {
             Toast.makeText(this, "Please fill all fields and select an image", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -123,6 +126,7 @@ public class AddProductsActivity extends AppCompatActivity {
                                     productData.put("name", name);
                                     productData.put("description", description);
                                     productData.put("price", priceA);
+                                    productData.put("category", category); // Add category to the product data
                                     productData.put("image", imageUrl.toString());
                                     productData.put("userId", userId);
 
@@ -178,6 +182,7 @@ public class AddProductsActivity extends AppCompatActivity {
         descriptionEditText.setText("");
         priceAEditText.setText("");
         priceBEditText.setText("");
+        categoryEditText.setText(""); // Clear the category field
         selectedImageView.setImageURI(null);
         imageUri = null;
     }

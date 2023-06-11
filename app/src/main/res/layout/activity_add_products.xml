@@ -47,11 +47,20 @@
         android:hint="Price B"
         android:inputType="numberDecimal" />
 
+    <EditText
+        android:id="@+id/category_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/price_b_edit_text"
+        android:layout_margin="16dp"
+        android:hint="Category"
+        android:inputType="text" />
+
     <Button
         android:id="@+id/select_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/price_b_edit_text"
+        android:layout_below="@id/category_edit_text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="Select Image" />

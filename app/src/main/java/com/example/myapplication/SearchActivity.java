@@ -1,14 +1,26 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +28,8 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity {
 
     private EditText searchEditText;
-    private ImageButton searchButton;
+    private FirebaseFirestore db;
+    private ProductAdapter productAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,48 +37,74 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         searchEditText = findViewById(R.id.searchEditText);
-        searchButton = findViewById(R.id.searchButton);
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String searchTerm = searchEditText.getText().toString().trim();
-                ProductBot.searchProducts(searchTerm, new ProductBot.SearchListener() {
-                    @Override
-                    public void onSearchComplete(List<ProductBot.ProductInfo> products) {
-                        displaySearchResults(products);
-                    }
-
-                    @Override
-                    public void onSearchError(String errorMessage) {
-                        Toast.makeText(SearchActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-
-    }
-
-    private void displaySearchResults(List<ProductBot.ProductInfo> productInfoList) {
-        List<Product> productList = convertToProductList(productInfoList);
+        db = FirebaseFirestore.getInstance();
+        productAdapter = new ProductAdapter(new ArrayList<>());
 
         RecyclerView searchRecyclerView = findViewById(R.id.searchRecyclerView);
-        ProductAdapter productAdapter = new ProductAdapter(productList);
         searchRecyclerView.setAdapter(productAdapter);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // This method is called before the text is changed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // This method is called while the text is being changed
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // This method is called after the text has been changed
+                String searchTerm = editable.toString().trim().toLowerCase();
+
+                if (searchTerm.isEmpty()) {
+                    // Clear the product list when the search term is empty
+                    productAdapter.setProducts(new ArrayList<>());
+                    productAdapter.notifyDataSetChanged();
+                    return;
+                }
+
+                // Perform the query with a dynamic filter
+                Query productAQuery = db.collection("productA")
+                        .whereGreaterThanOrEqualTo("lowercaseName", searchTerm)
+                        .whereLessThan("lowercaseName", searchTerm + "z");
+
+                performQuery(productAQuery);
+
+                Query productBQuery = db.collection("productB")
+                        .whereGreaterThanOrEqualTo("lowercaseName", searchTerm)
+                        .whereLessThan("lowercaseName", searchTerm + "z");
+
+                performQuery(productBQuery);
+            }
+
+        });
     }
 
-    private List<Product> convertToProductList(List<ProductBot.ProductInfo> productInfoList) {
-        List<Product> productList = new ArrayList<>();
-        for (ProductBot.ProductInfo productInfo : productInfoList) {
-            String productName = productInfo.getName();
-            String imageUrl = "";
-            Product product = new Product(productName, imageUrl);
-            productList.add(product);
-        }
-        return productList;
+    private void performQuery(Query query) {
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Toast.makeText(SearchActivity.this, "Error performing search", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                List<Product> productList = new ArrayList<>();
+                for (DocumentSnapshot document : value) {
+                    String productName = document.getString("name");
+                    String imageUrl = document.getString("image");
+                    Product product = new Product(productName, imageUrl);
+                    productList.add(product);
+                }
+
+                productAdapter.setProducts(productList);
+                productAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }
-
-
 

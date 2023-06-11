@@ -23,12 +23,12 @@ public class User {
         this.isSellerAccount = isSellerAccount;
     }
 
-    public User(String email, String phoneNumber, String firstName, String lastName, String dob) {
+    public User(String email, String phoneNumber, String firstName, String lastName, boolean isSellerAccount) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.dateOfBirth = dob;
+        this.isSellerAccount = isSellerAccount;
     }
 
     public String getEmail() {
