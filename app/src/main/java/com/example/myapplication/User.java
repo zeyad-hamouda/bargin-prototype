@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.util.ArrayList;
+
 public class User {
     private String email;
     private String phoneNumber;
@@ -9,6 +11,7 @@ public class User {
     private String dateOfBirth;
     private String displayName;
     private boolean isSellerAccount;
+    private ArrayList<String> viewedProductIds;
 
     public User() {
     }
@@ -21,6 +24,14 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.displayName = displayName;
         this.isSellerAccount = isSellerAccount;
+    }
+    public User(String email, String phoneNumber, String firstName, String lastName, boolean isSellerAccount, ArrayList<String> viewedProductIds) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isSellerAccount = isSellerAccount;
+        this.viewedProductIds = viewedProductIds;
     }
 
     public User(String email, String phoneNumber, String firstName, String lastName, boolean isSellerAccount) {
@@ -81,4 +92,11 @@ public class User {
     }
     public boolean isSellerAccount(){ return isSellerAccount;}
     public void isSellerAccount(boolean isSellerAccount){this.isSellerAccount = isSellerAccount;}
+    public ArrayList<String> getViewedProductIds() {
+        return viewedProductIds;
+    }
+
+    public void setViewedProductIds(ArrayList<String> viewedProductIds) {
+        this.viewedProductIds = viewedProductIds;
+    }
 }
