@@ -28,10 +28,12 @@ public class Product {
     }
 
     public String getName() {
+
         return name;
     }
 
     public String getImageUrl() {
+
         return imageUrl;
     }
     public String getCategory() {

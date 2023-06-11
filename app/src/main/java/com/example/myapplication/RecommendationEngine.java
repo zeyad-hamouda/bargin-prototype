@@ -20,14 +20,10 @@ public class RecommendationEngine {
         for (String viewedProductId : user.getViewedProductIds()) {
             Product viewedProduct = products.get(viewedProductId);
 
-            for (String viewerUserId : viewedProduct.getViewerUserIds()) {
-                User viewerUser = users.get(viewerUserId);
-
-                // For each product that the viewerUser has viewed, add it to the recommendations
-                for (String productId : viewerUser.getViewedProductIds()) {
-                    if (!user.getViewedProductIds().contains(productId)) {
-                        recommendations.add(products.get(productId));
-                    }
+            // For each product that the viewerUser has viewed, add it to the recommendations
+            for (String productId : viewedProduct.getViewerUserIds()) {
+                if (!user.getViewedProductIds().contains(productId)) {
+                    recommendations.add(products.get(productId));
                 }
             }
         }
