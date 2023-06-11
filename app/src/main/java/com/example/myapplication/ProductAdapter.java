@@ -20,6 +20,7 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     private List<Product> productList;
+    private OnProductClickListener listener;
 
     public ProductAdapter(List<Product> productList) {
         this.productList = productList;
@@ -44,7 +45,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 .load(product.getImageUrl())
                 .placeholder(R.drawable.placeholder)
                 .into(holder.productImageView);
+
+        // Set the click listener for the item
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onProductClick(product);
+                }
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -60,5 +72,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productNameTextView = itemView.findViewById(R.id.productNameTextView);
             productImageView = itemView.findViewById(R.id.productImageView);
         }
+    }
+
+    public interface OnProductClickListener {
+        void onProductClick(Product product);
+    }
+
+    public void setOnProductClickListener(OnProductClickListener listener) {
+        this.listener = listener;
     }
 }

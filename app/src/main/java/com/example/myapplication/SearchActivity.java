@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,7 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ProductAdapter.OnProductClickListener {
 
     private EditText searchEditText;
     private FirebaseFirestore db;
@@ -43,6 +44,7 @@ public class SearchActivity extends AppCompatActivity {
         RecyclerView searchRecyclerView = findViewById(R.id.searchRecyclerView);
         searchRecyclerView.setAdapter(productAdapter);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        productAdapter.setOnProductClickListener(this);
 
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -81,6 +83,7 @@ public class SearchActivity extends AppCompatActivity {
                 performQuery(productBQuery);
             }
 
+
         });
     }
 
@@ -106,5 +109,16 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onProductClick(Product product) {
+        // Handle the product click event
+        // For example, start a new activity to show the product details
+        Intent intent = new Intent(SearchActivity.this, ProductDetailsActivity.class);
+        intent.putExtra("productName", product.getName());
+        intent.putExtra("imageUrl", product.getImageUrl());
+        startActivity(intent);
+    }
 }
+
 
