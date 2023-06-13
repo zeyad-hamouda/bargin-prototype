@@ -4,15 +4,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,7 @@ public class AddProductsActivity extends AppCompatActivity {
     private Spinner categorySpinner;
     private Button selectImageButton;
     private Button addProductButton;
+    private ImageView closeButton;
 
     private Uri imageUri;
 
@@ -60,6 +62,7 @@ public class AddProductsActivity extends AppCompatActivity {
         selectImageButton = findViewById(R.id.select_image_button);
         addProductButton = findViewById(R.id.add_product_button);
         lowercaseNameEditText = findViewById(R.id.lowercase_name_edit_text);
+        closeButton = findViewById(R.id.closeButton);
 
         firestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -76,6 +79,14 @@ public class AddProductsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addProduct();
+            }
+        });
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
@@ -200,5 +211,11 @@ public class AddProductsActivity extends AppCompatActivity {
         categorySpinner.setSelection(0); // Clear the category field
         imageUri = null;
         lowercaseNameEditText.setText("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

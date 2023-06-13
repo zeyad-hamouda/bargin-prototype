@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,8 +30,10 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity implements ProductAdapter.OnProductClickListener {
 
     private EditText searchEditText;
-    private FirebaseFirestore db;
+    private RecyclerView searchRecyclerView;
+    private ImageButton backButton;
     private ProductAdapter productAdapter;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +41,16 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
         setContentView(R.layout.activity_search);
 
         searchEditText = findViewById(R.id.searchEditText);
+        searchRecyclerView = findViewById(R.id.searchRecyclerView);
+        backButton = findViewById(R.id.backButton);
+
         db = FirebaseFirestore.getInstance();
         productAdapter = new ProductAdapter(new ArrayList<>());
+        productAdapter.setOnProductClickListener(this);
 
-        RecyclerView searchRecyclerView = findViewById(R.id.searchRecyclerView);
         searchRecyclerView.setAdapter(productAdapter);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productAdapter.setOnProductClickListener(this);
+
         searchEditText.requestFocus();
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -63,29 +69,25 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
                 String searchTerm = editable.toString().trim().toLowerCase();
 
                 if (searchTerm.isEmpty()) {
-                    // Clear the product list when the search term is empty
                     productAdapter.setProducts(new ArrayList<>());
                     productAdapter.notifyDataSetChanged();
                     return;
                 }
 
-                // Perform the query with a dynamic filter
-                Query productAQuery = db.collection("productA")
-                        .orderBy("lowercaseName")
+                Query productQuery = db.collection("products")
+                        .orderBy("name")
                         .startAt(searchTerm)
                         .endAt(searchTerm + "\uf8ff");
 
-                performQuery(productAQuery);
-
-                Query productBQuery = db.collection("productB")
-                        .orderBy("lowercaseName")
-                        .startAt(searchTerm)
-                        .endAt(searchTerm + "\uf8ff");
-
-                performQuery(productBQuery);
+                performQuery(productQuery);
             }
+        });
 
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finishWithSlideAnimation();
+            }
         });
     }
 
@@ -113,14 +115,22 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
         });
     }
 
+    private void finishWithSlideAnimation() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 
     @Override
     public void onProductClick(Product product) {
-        // Handle the product click event
-        // For example, start a new activity to show the product details
         Intent intent = new Intent(SearchActivity.this, ProductDetailsActivity.class);
         intent.putExtra("productName", product.getName());
         intent.putExtra("imageUrl", product.getImageUrl());
+        startActivityWithSlideAnimation(intent);
+    }
+
+    private void startActivityWithSlideAnimation(Intent intent) {
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
+
