@@ -37,7 +37,7 @@ public class ProductHistoryActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            Query query = firestore.collection("products")
+            Query query = firestore.collection("productA")
                     .whereEqualTo("userId", userId); // Assuming you have a "userId" field in your products collection
 
             query.addSnapshotListener(this, (value, error) -> {

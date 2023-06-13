@@ -45,7 +45,7 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
         searchRecyclerView.setAdapter(productAdapter);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         productAdapter.setOnProductClickListener(this);
-
+        searchEditText.requestFocus();
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -71,14 +71,16 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
 
                 // Perform the query with a dynamic filter
                 Query productAQuery = db.collection("productA")
-                        .whereGreaterThanOrEqualTo("lowercaseName", searchTerm)
-                        .whereLessThan("lowercaseName", searchTerm + "z");
+                        .orderBy("lowercaseName")
+                        .startAt(searchTerm)
+                        .endAt(searchTerm + "\uf8ff");
 
                 performQuery(productAQuery);
 
                 Query productBQuery = db.collection("productB")
-                        .whereGreaterThanOrEqualTo("lowercaseName", searchTerm)
-                        .whereLessThan("lowercaseName", searchTerm + "z");
+                        .orderBy("lowercaseName")
+                        .startAt(searchTerm)
+                        .endAt(searchTerm + "\uf8ff");
 
                 performQuery(productBQuery);
             }
@@ -97,6 +99,7 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
                 }
 
                 List<Product> productList = new ArrayList<>();
+
                 for (DocumentSnapshot document : value) {
                     String productName = document.getString("name");
                     String imageUrl = document.getString("image");
@@ -110,6 +113,7 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
         });
     }
 
+
     @Override
     public void onProductClick(Product product) {
         // Handle the product click event
@@ -120,5 +124,3 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
         startActivity(intent);
     }
 }
-
-

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +18,12 @@ public class RecommendationEngine {
         List<Product> recommendations = new ArrayList<>();
 
         // Collaborative filtering: Find users who have viewed the same products
-        for (String viewedProductId : user.getViewedProductIds()) {
+        for (String viewedProductId : user.getViewedProductIds().keySet()) {
             Product viewedProduct = products.get(viewedProductId);
 
             // For each product that the viewerUser has viewed, add it to the recommendations
             for (String productId : viewedProduct.getViewerUserIds()) {
-                if (!user.getViewedProductIds().contains(productId)) {
+                if (!user.getViewedProductIds().containsKey(productId)) {
                     recommendations.add(products.get(productId));
                 }
             }
@@ -30,8 +31,8 @@ public class RecommendationEngine {
 
         // Content-based filtering: Recommend products in the same categories
         for (Product product : products.values()) {
-            if (!user.getViewedProductIds().contains(product.getId())) {
-                for (String viewedProductId : user.getViewedProductIds()) {
+            if (!user.getViewedProductIds().containsKey(product.getId())) {
+                for (String viewedProductId : user.getViewedProductIds().keySet()) {
                     Product viewedProduct = products.get(viewedProductId);
 
                     if (viewedProduct.getCategory().equals(product.getCategory())) {

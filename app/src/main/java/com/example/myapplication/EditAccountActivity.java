@@ -170,24 +170,49 @@ public class EditAccountActivity extends AppCompatActivity {
         if (currentUser != null) {
             String userId = currentUser.getUid();
 
-            // Update the account details in the realtime database (users node)
-            User updatedUser = new User(email, phoneNumber, firstName, lastName, isSellerAccount);
-            mDatabase.child(userId).setValue(updatedUser)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                // Account details update successful
-                                Toast.makeText(EditAccountActivity.this, "Account details updated successfully.", Toast.LENGTH_SHORT).show();
-                                finish(); // Close the activity and return to the previous screen
-                            } else {
-                                // Account details update failed
-                                Toast.makeText(EditAccountActivity.this, "Failed to update account details.", Toast.LENGTH_SHORT).show();
-                            }
+            // Retrieve the existing user data from the database
+            mDatabase.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // Get the existing user object from the snapshot
+                        User existingUser = snapshot.getValue(User.class);
+                        if (existingUser != null) {
+                            // Update the specific fields with the new values
+                            existingUser.setEmail(email);
+                            existingUser.setPhoneNumber(phoneNumber);
+                            existingUser.setFirstName(firstName);
+                            existingUser.setLastName(lastName);
+                            existingUser.setSellerAccount(isSellerAccount);
+
+                            // Update the modified user object in the database
+                            mDatabase.child(userId).setValue(existingUser)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                // Account details update successful
+                                                Toast.makeText(EditAccountActivity.this, "Account details updated successfully.", Toast.LENGTH_SHORT).show();
+                                                finish(); // Close the activity and return to the previous screen
+                                            } else {
+                                                // Account details update failed
+                                                Toast.makeText(EditAccountActivity.this, "Failed to update account details.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
-                    });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle the database read error
+                    Toast.makeText(EditAccountActivity.this, "Failed to retrieve account details.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
+
 
     private void disableTextSelection(EditText editText) {
         editText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {

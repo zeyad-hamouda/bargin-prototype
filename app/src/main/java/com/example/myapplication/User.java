@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class User {
@@ -12,9 +13,10 @@ public class User {
     private String dateOfBirth;
     private String displayName;
     private boolean isSellerAccount;
-    private List<String> viewedProductIds;
+    private HashMap<String, Boolean> viewedProductIds;
     public User() {
-        this.viewedProductIds = new ArrayList<>();
+        // Initialize viewedProductIds as an empty HashMap
+        this.viewedProductIds = new HashMap<>();
     }
 
 
@@ -27,7 +29,7 @@ public class User {
         this.displayName = displayName;
         this.isSellerAccount = isSellerAccount;
     }
-    public User(String email, String phoneNumber, String firstName, String lastName, boolean isSellerAccount, ArrayList<String> viewedProductIds) {
+    public User(String email, String phoneNumber, String firstName, String lastName, boolean isSellerAccount, HashMap<String, Boolean> viewedProductIds) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
@@ -93,12 +95,14 @@ public class User {
         this.displayName = displayName;
     }
     public boolean isSellerAccount(){ return isSellerAccount;}
-    public void isSellerAccount(boolean isSellerAccount){this.isSellerAccount = isSellerAccount;}
-    public List<String> getViewedProductIds() {
-        return this.viewedProductIds;
+    public HashMap<String, Boolean> getViewedProductIds() {
+        return viewedProductIds;
+    }
+    public void setSellerAccount(boolean sellerAccount) {
+        isSellerAccount = sellerAccount;
     }
 
-    public void setViewedProductIds(List<String> viewedProductIds) {
+    public void setViewedProductIds(HashMap<String, Boolean> viewedProductIds) {
         this.viewedProductIds = viewedProductIds;
     }
 }
