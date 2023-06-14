@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,7 +26,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity implements ProductAdapter.OnProductClickListener {
 
@@ -69,17 +72,24 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
                 String searchTerm = editable.toString().trim().toLowerCase();
 
                 if (searchTerm.isEmpty()) {
+                    // Clear the product list when the search term is empty
                     productAdapter.setProducts(new ArrayList<>());
                     productAdapter.notifyDataSetChanged();
                     return;
                 }
 
-                Query productQuery = db.collection("products")
-                        .orderBy("name")
-                        .startAt(searchTerm)
-                        .endAt(searchTerm + "\uf8ff");
+                // Perform the query with a dynamic filter
+                Query productAQuery = db.collection("productA")
+                        .whereGreaterThanOrEqualTo("lowercaseName", searchTerm)
+                        .whereLessThan("lowercaseName", searchTerm + "z");
 
-                performQuery(productQuery);
+                performQuery(productAQuery);
+
+                Query productBQuery = db.collection("productB")
+                        .whereGreaterThanOrEqualTo("lowercaseName", searchTerm)
+                        .whereLessThan("lowercaseName", searchTerm + "z");
+
+                performQuery(productBQuery);
             }
         });
 
@@ -101,7 +111,6 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
                 }
 
                 List<Product> productList = new ArrayList<>();
-
                 for (DocumentSnapshot document : value) {
                     String productName = document.getString("name");
                     String imageUrl = document.getString("image");
@@ -133,4 +142,3 @@ public class SearchActivity extends AppCompatActivity implements ProductAdapter.
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
-

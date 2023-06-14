@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         homeButton = findViewById(R.id.home_button);
         accountButton = findViewById(R.id.account_button);
         searchEditText = findViewById(R.id.searchEditText);
+        FirebaseApp.initializeApp(this);
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(DebugAppCheckProviderFactory.getInstance());
 
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override

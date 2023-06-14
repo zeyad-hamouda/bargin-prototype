@@ -11,6 +11,15 @@
         android:textStyle="bold"
         android:textSize="24sp"
         />
+    <ImageView
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/page_title"
+        android:layout_alignBottom="@id/page_title"
+        android:layout_marginEnd="-347dp"
+        android:src="@drawable/ic_close" />
     <TextView
         android:id="@+id/email_title"
         android:layout_width="match_parent"
